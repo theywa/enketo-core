@@ -18,7 +18,7 @@ module.exports = function( grunt ) {
         pkg: grunt.file.readJSON( 'package.json' ),
         concurrent: {
             develop: {
-                tasks: [ 'connect:server:keepalive', 'watch' ],
+                tasks: [ 'shell:transformer', 'connect:server:keepalive', 'watch' ],
                 options: {
                     logConcurrentOutput: true
                 }
@@ -27,7 +27,8 @@ module.exports = function( grunt ) {
         connect: {
             server: {
                 options: {
-                    port: 8005
+                    port: 8005,
+                    base: [ 'test/forms', 'build' ]
                 }
             },
             test: {
@@ -55,7 +56,7 @@ module.exports = function( grunt ) {
             options: {
                 jshintrc: '.jshintrc'
             },
-            all: [ '*.js', 'src/js/**/*.js', '!src/js/extern.js' ]
+            all: [ '*.js', 'src/**/*.js', '!esri/**/*.js' ]
         },
         watch: {
             sass: {
@@ -67,7 +68,7 @@ module.exports = function( grunt ) {
                 }
             },
             js: {
-                files: [ '*.js', 'src/**/*.js' ],
+                files: [ 'config.json', '*.js', 'src/**/*.js' ],
                 tasks: [ 'browserify' ],
                 options: {
                     spawn: false,
@@ -78,18 +79,28 @@ module.exports = function( grunt ) {
         karma: {
             options: {
                 singleRun: true,
-                reporters: [ 'dots' ]
+                reporters: [ 'dots' ],
+                configFile: 'test/karma.conf.js',
             },
             headless: {
-                configFile: 'test/karma.conf.js',
-                browsers: [ 'PhantomJS' ]
+                browsers: [ 'ChromeHeadless' ]
             },
             browsers: {
-                configFile: 'test/browser-karma.conf.js',
-                browsers: [ 'Chrome', 'ChromeCanary', 'Firefox', /*'Opera',*/ 'Safari' ]
+                browsers: [ 'Chrome', 'ChromeCanary', 'Firefox', /*'Opera','Safari' */ ]
             }
         },
         sass: {
+            options: {
+                sourceMap: false,
+                // this importer should be removed (npm 3+) or changed(npm 2) in the gruntFile of the app that is using enketo-core
+                importer: function( url, prev, done ) {
+                    // fixes enketo-core submodule references
+                    url = ( /\.\.\/\.\.\/node_modules\//.test( url ) ) ? url.replace( '../../node_modules/', 'node_modules/' ) : url;
+                    done( {
+                        file: url
+                    } );
+                }
+            },
             compile: {
                 cwd: 'src/sass',
                 dest: 'build/css',
@@ -114,11 +125,18 @@ module.exports = function( grunt ) {
         uglify: {
             standalone: {
                 files: {
-                    'build/js/enketo-bundle.min.js': [ 'build/js/enketo-bundle.js' ]
+                    'build/js/enketo-bundle.js': [ 'build/js/enketo-bundle.js' ]
                 },
             },
         },
+        shell: {
+            transformer: {
+                command: 'node node_modules/enketo-transformer/app.js'
+            },
+        }
     } );
+
+    grunt.loadNpmTasks( 'grunt-sass' );
 
     grunt.registerTask( 'transforms', 'Creating forms.json', function( task ) {
         var forms = {};
@@ -151,9 +169,9 @@ module.exports = function( grunt ) {
     } );
 
     grunt.registerTask( 'compile', [ 'browserify', 'uglify' ] );
-    grunt.registerTask( 'test', [ 'jsbeautifier:test', 'jshint', 'compile', 'transforms', 'karma:headless' ] );
+    grunt.registerTask( 'test', [ 'jsbeautifier:test', 'jshint', 'compile', 'transforms', 'karma:headless', 'style' ] );
     grunt.registerTask( 'style', [ 'sass' ] );
     grunt.registerTask( 'server', [ 'connect:server:keepalive' ] );
-    grunt.registerTask( 'develop', [ 'browserify', 'concurrent:develop' ] );
+    grunt.registerTask( 'develop', [ 'style', 'browserify', 'concurrent:develop' ] );
     grunt.registerTask( 'default', [ 'style', 'compile' ] );
 };

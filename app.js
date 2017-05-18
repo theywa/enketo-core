@@ -6,14 +6,15 @@
  */
 
 var $ = require( 'jquery' );
-// until all plugins are commonJS-friendly, expose jQuery globally
-window.jQuery = $;
-
+window.jQuery = $; // required for bootstrap-timepicker
 var support = require( './src/js/support' );
 var Form = require( './src/js/Form' );
 var fileManager = require( './src/js/file-manager' );
-
-var loadErrors, form, formStr, modelStr;
+var loadErrors;
+var form;
+var formStr;
+var modelStr;
+var xform = getURLParameter( 'xform' );
 
 // if querystring touch=true is added, override detected touchscreen presence
 if ( getURLParameter( 'touch' ) === 'true' ) {
@@ -21,10 +22,12 @@ if ( getURLParameter( 'touch' ) === 'true' ) {
     $( 'html' ).addClass( 'touch' );
 }
 
-// check if HTML form is hardcoded or needs to be retrieved
-if ( getURLParameter( 'xform' ) !== 'null' ) {
+// Check if HTML form is hardcoded or needs to be retrieved
+// note: when running this file in enketo-core-performance-monitor xform = 'null'
+if ( xform && xform !== 'null' ) {
     $( '.guidance' ).remove();
-    $.getJSON( 'http://xslt-dev.enketo.org/transform?xform=' + getURLParameter( 'xform' ), function( survey ) {
+    xform = /^https?:\/\//.test( xform ) ? xform : location.origin + '/' + xform;
+    $.getJSON( 'http://' + location.hostname + ':8085/transform?xform=' + xform, function( survey ) {
         formStr = survey.form;
         modelStr = survey.model;
         $( '.form-header' ).after( formStr );
@@ -38,6 +41,7 @@ if ( getURLParameter( 'xform' ) !== 'null' ) {
 
 // validate handler for validate button
 $( '#validate-form' ).on( 'click', function() {
+    // validate form
     form.validate()
         .then( function( valid ) {
             if ( !valid ) {
@@ -55,6 +59,13 @@ $( '#validate-form' ).on( 'click', function() {
 function initializeForm() {
     form = new Form( 'form.or:eq(0)', {
         modelStr: modelStr
+    }, {
+        arcGis: {
+            basemaps: [ "streets", "topo", "satellite", "osm" ],
+            webMapId: 'f2e9b762544945f390ca4ac3671cfa72',
+            hasZ: true
+        },
+        'clearIrrelevantImmediately': false
     } );
     // for debugging
     window.form = form;

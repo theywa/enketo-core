@@ -4,15 +4,17 @@
 		<title>Enketo-Core Developer template</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600&amp;subset=latin,cyrillic-ext,cyrillic,greek-ext,greek,vietnamese,latin-ext' rel='stylesheet' type='text/css'>
 
-		<!--<link type="text/css" href="../build/css/plain.css" media="all" rel="stylesheet" />-->
-		<link type="text/css" href="../build/css/formhub.css" media="all" rel="stylesheet" />
-		<!--<link type="text/css" href="../build/css/grid.css" media="all" rel="stylesheet" />-->
+		<!--<link type="text/css" href="./css/plain.css" media="all" rel="stylesheet" />-->
+		<link type="text/css" href="./css/formhub.css" media="all" rel="stylesheet" />
+		<!--<link type="text/css" href="./css/grid.css" media="all" rel="stylesheet" />-->
 
-		<!--<link type="text/css" href="../build/css/plain-print.css" media="print" rel="stylesheet" />-->
-		<link type="text/css" href="../build/css/formhub-print.css" media="print" rel="stylesheet" />
-		<!--<link type="text/css" href="../build/css/grid-print.css" media="print" rel="stylesheet" />-->
+		<!--<link type="text/css" href="./css/plain-print.css" media="print" rel="stylesheet" />-->
+		<link type="text/css" href="./css/formhub-print.css" media="print" rel="stylesheet" />
+		<!--<link type="text/css" href="./css/grid-print.css" media="print" rel="stylesheet" />-->
 
-		<style typet="text/css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<style type="text/css">
 			.form-footer .disabled{
 				display: none;
 			}
@@ -20,7 +22,7 @@
 		<script>
 			// The comment below is used in enketo-core-performance-monitor.
 			//{{globalModelStr}}
-	</script>
+		</script>
 
 	</head>
 	<body>
@@ -30,10 +32,11 @@
 					This section is to be removed in application 
 				-->
 				<section class="guidance">
-					<p>Add querystring to source of XForm, eg:</p>
+					<p>Add querystring to source of XForm (URL or local file relative to /test/forms), eg:</p>
 					<ul>
 						<li><a href="?xform=https://api.ona.io/enketo/forms/68781/form.xml">?xform=https://api.ona.io/enketo/forms/68781/form.xml</a></li>
 						<li><a href="?xform=https://api.ona.io/enketo/forms/66458/form.xml">?xform=https://api.ona.io/enketo/forms/66458/form.xml</a></li>
+						<li><a href="?xform=nested_repeats.xml">?xform=nested_repeats.xml</a></li>
 					</ul>
 				</section>
 				<!-- 
@@ -42,7 +45,7 @@
 					will be appended by Enketo Core.
 				-->
 				<header class="form-header clearfix">
-					<span class="form-language-selector"><span>Choose Language</span></span>
+					<span class="form-language-selector hide"><span>Choose Language</span></span>
 				</header>
 
 				<!-- The comment below is used in enketo-core-performance-monitor. -->
@@ -57,7 +60,7 @@
 						<button id="validate-form" class="btn btn-primary" style="width:200px; margin-left: calc(50% - 100px);">Validate</button>
       					<a href="#" class="btn btn-primary next-page disabled" style="width: 200px; margin-left: calc(50% - 100px)">Next</a>
       				
-      				<div class="enketo-power" style="margin-bottom: 30px;">Powered by <a href="http://enketo.org" title="enketo.org website"><img src="https://enketo.org/images/enketo_bare_100x37.png" alt="enketo logo" /></a> </div>
+      				<div class="enketo-power" style="margin-bottom: 30px;">Powered by <a href="http://enketo.org" title="enketo.org website"><img src="https://enketo.org/media/images/logos/enketo_bare_150x56.png" alt="enketo logo" /></a> </div>
       				<div class="form-footer__jump-nav" style="display: flex; flex-direction: row;">
     					<a href="#" class="btn btn-default disabled first-page" style="flex: 1; border-radius: 0;">Return to Beginning</a>
     					<a href="#" class="btn btn-default disabled last-page" style="flex: 1; border-radius: 0;">Go to End</a>
@@ -71,7 +74,6 @@
 		<!-- <script src="//localhost:35729/livereload.js"></script> -->
 		
 		<!-- all the scripts -->
-		<!-- IMPORTANT: leave the minified script in the committed index.html, to not throw off enketo-core-performance-monitor --> 
-		<script type="text/javascript"  src="../build/js/enketo-bundle.min.js"></script>
+		<script type="text/javascript"  src="./js/enketo-bundle.js"></script>
 	</body>
 </html>

@@ -7,5 +7,15 @@
         "tiles": "GOOGLE_SATELLITE",
         "name": "satellite"
     } ],
-    "googleApiKey": ""
+    "googleApiKey": "",
+    "repeatOrdinals": false,
+    "validateContinuously": false,
+    "validatePage": true,
+    "arcGis": {
+        "jsUrl": "",
+        "cssUrl": "",
+        "webMapId": "",
+        "hasZ": true,
+        "basemaps": [ "streets" ]
+    }
 }
