@@ -722,7 +722,8 @@ FormModel.prototype.getRepeatSeries = function( repeatPath, repeatSeriesIndex ) 
         while ( checkEl ) {
             // Ignore any sibling text and comment nodes (e.g. whitespace with a newline character)
             // also deal with repeats that have non-repeat siblings in between them, event though that would be a bug.
-            if ( checkEl.nodeName && checkEl.nodeName === nodeName ) {
+            // Ignore jr:template to fix bug extra repeat group on Edge Legacy
+            if ( checkEl.nodeName && checkEl.nodeName === nodeName && checkEl.getAttribute('jr:template') === null ) {
                 result.push( checkEl );
             }
             checkEl = checkEl.nextSibling;
